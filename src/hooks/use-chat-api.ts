@@ -21,11 +21,27 @@ export const useChatApi = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      // Primeiro tenta obter o texto da resposta
+      const responseText = await response.text();
       
-      // Assumindo que a resposta vem no formato { message: "resposta do bot" }
-      // Ajuste conforme o formato real da sua API
-      return data.message || data.response || 'Resposta recebida';
+      try {
+        // Tenta fazer parse como JSON
+        const jsonData = JSON.parse(responseText);
+        
+        // Lida com diferentes formatos de resposta JSON
+        if (Array.isArray(jsonData) && jsonData[0]?.output) {
+          return jsonData[0].output;
+        } else if (jsonData.message) {
+          return jsonData.message;
+        } else if (jsonData.output) {
+          return jsonData.output;
+        } else {
+          return responseText; // Se JSON não tem formato esperado, usa texto
+        }
+      } catch {
+        // Se não é JSON válido, retorna o texto diretamente
+        return responseText;
+      }
       
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);

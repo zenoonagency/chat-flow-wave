@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ChatHeader } from './ChatHeader';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
+import { QuickMessages } from './QuickMessages';
 
 type ChatState = 'closed' | 'minimized' | 'open';
 
@@ -22,7 +23,7 @@ export const ChatWidget = () => {
   const { toast } = useToast();
   
   const { position, isDragging, handleMouseDown, resetPosition } = useDrag({
-    initialPosition: { x: window.innerWidth - 420, y: 100 },
+    initialPosition: { x: window.innerWidth * 0.67, y: 0 }, // Posição inicial alinhada à direita
   });
 
   const scrollToBottom = () => {
@@ -121,11 +122,12 @@ export const ChatWidget = () => {
       {chatState === 'minimized' && (
         <div
           className={cn(
-            "fixed bottom-6 right-6 z-50",
+            "fixed z-50",
             "animate-slide-up"
           )}
           style={{
-            transform: `translate(${position.x - (window.innerWidth - 420)}px, ${position.y - 100}px)`,
+            left: `${position.x}px`,
+            top: `${position.y + 60}px`, // Offset do header
           }}
         >
           <Button
@@ -134,11 +136,14 @@ export const ChatWidget = () => {
               "h-12 px-4 rounded-lg shadow-lg bg-chat-primary hover:bg-chat-primary-hover",
               "flex items-center gap-2 text-white"
             )}
+            style={{
+              width: `${window.innerWidth * 0.33 - 20}px`, // Mesma largura do chat - padding
+            }}
           >
             <MessageCircle className="h-5 w-5" />
             <span className="text-sm font-medium">Chat Assistant</span>
             {hasNewMessage && (
-              <div className="h-2 w-2 bg-white rounded-full animate-pulse" />
+              <div className="h-2 w-2 bg-white rounded-full animate-pulse ml-auto" />
             )}
           </Button>
         </div>
@@ -148,14 +153,15 @@ export const ChatWidget = () => {
       {isOpen && (
         <div
           className={cn(
-            "fixed z-50 bg-white rounded-lg shadow-2xl",
-            "w-[400px] h-[600px] max-h-[80vh]",
+            "fixed z-50 bg-white shadow-2xl",
             "flex flex-col overflow-hidden",
             "animate-slide-in-right"
           )}
           style={{
             left: `${position.x}px`,
             top: `${position.y}px`,
+            width: `${window.innerWidth * 0.33}px`, // 33% da largura
+            height: `${window.innerHeight}px`, // 100% da altura
           }}
         >
           <ChatHeader
@@ -172,6 +178,9 @@ export const ChatWidget = () => {
                 <div className="text-center">
                   <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p className="text-sm">Inicie uma conversa!</p>
+                  <p className="text-xs mt-2 opacity-70">
+                    Use as mensagens rápidas abaixo ou digite sua própria pergunta.
+                  </p>
                 </div>
               </div>
             ) : (
@@ -181,6 +190,12 @@ export const ChatWidget = () => {
             )}
             <div ref={messagesEndRef} />
           </div>
+          
+          {/* Quick Messages */}
+          <QuickMessages
+            onSend={handleSendMessage}
+            disabled={isLoading}
+          />
           
           <ChatInput
             onSend={handleSendMessage}

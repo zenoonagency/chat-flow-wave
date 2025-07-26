@@ -37,7 +37,8 @@ export const useDrag = ({
       };
 
       // Limita a posição dentro da tela
-      const maxX = window.innerWidth - 400; // largura aproximada do chat
+      const chatWidth = window.innerWidth * 0.33; // 33% da largura
+      const maxX = window.innerWidth - chatWidth;
       const maxY = window.innerHeight - 100;
       
       newPosition.x = Math.max(0, Math.min(maxX, newPosition.x));
