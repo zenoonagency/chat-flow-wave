@@ -17,8 +17,8 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 220 100% 50%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -35,6 +35,16 @@ All colors MUST be HSL.
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
+
+    /* Chat specific variables */
+    --chat-primary: 220 100% 50%;
+    --chat-primary-hover: 220 100% 45%;
+    --chat-bubble-user: 220 100% 50%;
+    --chat-bubble-bot: 210 40% 96.1%;
+    --chat-bubble-user-text: 0 0% 100%;
+    --chat-bubble-bot-text: 222.2 84% 4.9%;
+    --chat-shadow: 0 10% 20%;
+    --chat-shadow-intense: 0 0% 0%;
 
     --radius: 0.5rem;
 
@@ -101,5 +111,16 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .chat-shadow {
+    box-shadow: 0 10px 25px -5px hsl(var(--chat-shadow) / 0.1), 
+                0 10px 10px -5px hsl(var(--chat-shadow) / 0.04);
+  }
+  
+  .chat-shadow-intense {
+    box-shadow: 0 25px 50px -12px hsl(var(--chat-shadow-intense) / 0.25);
   }
 }
