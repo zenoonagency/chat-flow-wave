@@ -37,12 +37,15 @@ All colors MUST be HSL.
     --ring: 222.2 84% 4.9%;
 
     /* Chat specific variables */
-    --chat-primary: 220 100% 50%;
-    --chat-primary-hover: 220 100% 45%;
-    --chat-bubble-user: 220 100% 50%;
-    --chat-bubble-bot: 210 40% 96.1%;
+    --chat-primary: 250 84% 60%;
+    --chat-primary-hover: 250 84% 54%;
+    --chat-bubble-user: 250 84% 60%;
+    --chat-bubble-bot: 220 13% 12%;
     --chat-bubble-user-text: 0 0% 100%;
-    --chat-bubble-bot-text: 222.2 84% 4.9%;
+    --chat-bubble-bot-text: 0 0% 95%;
+    --chat-background: 224 71% 4%;
+    --chat-surface: 220 13% 8%;
+    --chat-border: 220 13% 15%;
     --chat-shadow: 0 10% 20%;
     --chat-shadow-intense: 0 0% 0%;
 

@@ -6,6 +6,9 @@ export interface ChatMessage {
   sender: 'user' | 'bot';
   timestamp: Date;
   isLoading?: boolean;
+  type?: 'text' | 'image' | 'audio';
+  mediaUrl?: string;
+  fileName?: string;
 }
 
 const STORAGE_KEY = 'chat-messages';
@@ -31,6 +34,7 @@ export const useChatStorage = () => {
 
   const addMessage = (message: Omit<ChatMessage, 'id' | 'timestamp'>) => {
     const newMessage: ChatMessage = {
+      type: 'text',
       ...message,
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       timestamp: new Date(),

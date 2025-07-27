@@ -1,21 +1,26 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send } from 'lucide-react';
+import { Send, Paperclip, Image, Mic } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
+  onSendMedia: (content: string, type: 'image' | 'audio', file: File) => void;
   disabled?: boolean;
   placeholder?: string;
 }
 
 export const ChatInput = ({ 
   onSend, 
+  onSendMedia,
   disabled = false, 
   placeholder = "Digite sua mensagem..." 
 }: ChatInputProps) => {
   const [message, setMessage] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,28 +37,86 @@ export const ChatInput = ({
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      toast({
+        title: "Arquivo muito grande",
+        description: "O arquivo deve ter no máximo 10MB",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const isImage = file.type.startsWith('image/');
+    const isAudio = file.type.startsWith('audio/');
+    
+    if (!isImage && !isAudio) {
+      toast({
+        title: "Tipo de arquivo não suportado",
+        description: "Apenas imagens e áudios são aceitos",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const type = isImage ? 'image' : 'audio';
+    onSendMedia(file.name, type, file);
+    
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 p-4 border-t bg-background">
-      <Input
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyPress={handleKeyPress}
-        placeholder={placeholder}
-        disabled={disabled}
-        className="flex-1 min-h-[40px] resize-none"
-        autoComplete="off"
-      />
-      <Button
-        type="submit"
-        disabled={disabled || !message.trim()}
-        size="default"
-        className={cn(
-          "px-3 bg-chat-primary hover:bg-chat-primary-hover",
-          "disabled:opacity-50 disabled:cursor-not-allowed"
-        )}
-      >
-        <Send className="h-4 w-4" />
-      </Button>
-    </form>
+    <div className="p-4 border-t bg-chat-surface">
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <div className="flex gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={disabled}
+            className="h-10 w-10 p-0 hover:bg-chat-border"
+          >
+            <Paperclip className="h-4 w-4" />
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*,audio/*"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
+        </div>
+        
+        <Input
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder={placeholder}
+          disabled={disabled}
+          className="flex-1 min-h-[40px] bg-chat-background border-chat-border text-white placeholder:text-gray-400"
+          autoComplete="off"
+        />
+        
+        <Button
+          type="submit"
+          disabled={disabled || !message.trim()}
+          size="default"
+          className={cn(
+            "px-3 bg-chat-primary hover:bg-chat-primary-hover text-white",
+            "disabled:opacity-50 disabled:cursor-not-allowed"
+          )}
+        >
+          <Send className="h-4 w-4" />
+        </Button>
+      </form>
+    </div>
   );
 };

@@ -53,7 +53,7 @@ export const ChatWidget = () => {
         sender: 'bot',
         isLoading: true 
       });
-      console.log('Mensagem de loading adicionada com ID:', loadingId);
+      console.log('Mensagens de loading adicionada com ID:', loadingId);
 
       // Envia mensagem para API
       const botResponse = await sendMessage(content);
@@ -84,6 +84,38 @@ export const ChatWidget = () => {
       toast({
         title: "Erro",
         description: errorMessage,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleSendMedia = async (content: string, type: 'image' | 'audio', file: File) => {
+    try {
+      // Cria URL do blob para visualização
+      const mediaUrl = URL.createObjectURL(file);
+      
+      // Adiciona mensagem com mídia
+      addMessage({ 
+        content, 
+        sender: 'user',
+        type,
+        mediaUrl,
+        fileName: file.name
+      });
+
+      if (chatState === 'minimized' || chatState === 'closed') {
+        setHasNewMessage(true);
+      }
+
+      toast({
+        title: "Arquivo enviado",
+        description: `${type === 'image' ? 'Imagem' : 'Áudio'} enviado com sucesso`,
+      });
+
+    } catch (error) {
+      toast({
+        title: "Erro ao enviar arquivo",
+        description: "Não foi possível enviar o arquivo",
         variant: "destructive",
       });
     }
@@ -160,9 +192,9 @@ export const ChatWidget = () => {
       {isOpen && (
         <div
           className={cn(
-            "fixed z-50 bg-white shadow-2xl",
+            "fixed z-50 bg-chat-background border-chat-border border shadow-2xl",
             "flex flex-col overflow-hidden",
-            "animate-slide-in-right"
+            "animate-slide-in-right rounded-l-2xl"
           )}
           style={{
             left: `${position.x}px`,
@@ -179,7 +211,7 @@ export const ChatWidget = () => {
           />
           
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 bg-muted/30">
+          <div className="flex-1 overflow-y-auto p-4 bg-chat-background">
             {messages.length === 0 ? (
               <div className="flex items-center justify-center h-full text-muted-foreground">
                 <div className="text-center">
@@ -210,6 +242,7 @@ export const ChatWidget = () => {
           
           <ChatInput
             onSend={handleSendMessage}
+            onSendMedia={handleSendMedia}
             disabled={isLoading}
             placeholder="Digite sua mensagem..."
           />
