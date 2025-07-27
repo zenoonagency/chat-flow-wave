@@ -19,6 +19,7 @@ export const ChatWidget = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const { messages, addMessage, updateMessage } = useChatStorage();
+  console.log('Mensagens no ChatWidget:', messages);
   const { sendMessage, isLoading } = useChatApi();
   const { toast } = useToast();
   
@@ -190,9 +191,13 @@ export const ChatWidget = () => {
                 </div>
               </div>
             ) : (
-              messages.map((message) => (
-                <ChatMessage key={message.id} message={message} />
-              ))
+              <>
+                {console.log('Renderizando', messages.length, 'mensagens')}
+                {messages.map((message, index) => {
+                  console.log('Renderizando mensagem', index, message);
+                  return <ChatMessage key={message.id} message={message} />
+                })}
+              </>
             )}
             <div ref={messagesEndRef} />
           </div>
