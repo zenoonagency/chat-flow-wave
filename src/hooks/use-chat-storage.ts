@@ -29,6 +29,7 @@ export const useChatStorage = () => {
   }, []);
 
   const saveMessages = (newMessages: ChatMessage[]) => {
+    console.log('Salvando mensagens:', newMessages);
     setMessages(newMessages);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newMessages));
   };
@@ -50,6 +51,8 @@ export const useChatStorage = () => {
     const updatedMessages = messages.map(msg => 
       msg.id === id ? { ...msg, ...updates } : msg
     );
+    console.log('Atualizando mensagem:', id, updates);
+    console.log('Mensagens após atualização:', updatedMessages);
     saveMessages(updatedMessages);
   };
 
