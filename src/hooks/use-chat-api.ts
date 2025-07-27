@@ -9,6 +9,8 @@ export const useChatApi = () => {
     setIsLoading(true);
     
     try {
+      console.log('Enviando mensagem:', message);
+      
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: {
@@ -17,16 +19,20 @@ export const useChatApi = () => {
         body: JSON.stringify({ message }),
       });
 
+      console.log('Response status:', response.status);
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       // Primeiro tenta obter o texto da resposta
       const responseText = await response.text();
+      console.log('Response text:', responseText);
       
       try {
         // Tenta fazer parse como JSON
         const jsonData = JSON.parse(responseText);
+        console.log('Parsed JSON:', jsonData);
         
         // Lida com diferentes formatos de resposta JSON
         if (Array.isArray(jsonData) && jsonData[0]?.output) {
@@ -38,7 +44,8 @@ export const useChatApi = () => {
         } else {
           return responseText; // Se JSON não tem formato esperado, usa texto
         }
-      } catch {
+      } catch (parseError) {
+        console.log('Não é JSON válido, usando texto diretamente:', responseText);
         // Se não é JSON válido, retorna o texto diretamente
         return responseText;
       }

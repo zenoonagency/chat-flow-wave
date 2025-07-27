@@ -40,6 +40,8 @@ export const useChatStorage = () => {
       timestamp: new Date(),
     };
     const updatedMessages = [...messages, newMessage];
+    console.log('Adicionando mensagem:', newMessage);
+    console.log('Total de mensagens após adicionar:', updatedMessages.length);
     saveMessages(updatedMessages);
     return newMessage.id;
   };

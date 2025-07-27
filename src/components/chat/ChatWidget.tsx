@@ -40,8 +40,11 @@ export const ChatWidget = () => {
     let loadingId: string | undefined;
     
     try {
+      console.log('Enviando mensagem do usuário:', content);
+      
       // Adiciona mensagem do usuário
-      addMessage({ content, sender: 'user' });
+      const userMessageId = addMessage({ content, sender: 'user' });
+      console.log('Mensagem do usuário adicionada com ID:', userMessageId);
       
       // Adiciona mensagem de loading do bot
       loadingId = addMessage({ 
@@ -49,15 +52,18 @@ export const ChatWidget = () => {
         sender: 'bot',
         isLoading: true 
       });
+      console.log('Mensagem de loading adicionada com ID:', loadingId);
 
       // Envia mensagem para API
       const botResponse = await sendMessage(content);
+      console.log('Resposta da API recebida:', botResponse);
       
       // Atualiza mensagem do bot com a resposta
       updateMessage(loadingId, { 
         content: botResponse, 
         isLoading: false 
       });
+      console.log('Mensagem do bot atualizada');
 
       if (chatState === 'minimized' || chatState === 'closed') {
         setHasNewMessage(true);
