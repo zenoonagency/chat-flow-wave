@@ -20,7 +20,7 @@ export const ChatWidget = () => {
   
   const { messages, addMessage, updateMessage } = useChatStorage();
   console.log('Mensagens no ChatWidget:', messages);
-  const { sendMessage, isLoading } = useChatApi();
+  const { sendMessage, sendMediaMessage, isLoading } = useChatApi();
   const { toast } = useToast();
   
   const { position, isDragging, handleMouseDown, resetPosition } = useDrag({
@@ -90,12 +90,14 @@ export const ChatWidget = () => {
   };
 
   const handleSendMedia = async (content: string, type: 'image' | 'audio', file: File) => {
+    let loadingId: string | undefined;
+    
     try {
       // Cria URL do blob para visualização
       const mediaUrl = URL.createObjectURL(file);
       
-      // Adiciona mensagem com mídia
-      addMessage({ 
+      // Adiciona mensagem do usuário com mídia
+      const userMessageId = addMessage({ 
         content, 
         sender: 'user',
         type,
@@ -103,19 +105,40 @@ export const ChatWidget = () => {
         fileName: file.name
       });
 
+      // Adiciona mensagem de loading do bot
+      loadingId = addMessage({ 
+        content: '', 
+        sender: 'bot',
+        isLoading: true 
+      });
+
+      // Envia arquivo para API
+      const botResponse = await sendMediaMessage(file, file.name);
+      
+      // Atualiza mensagem do bot com a resposta
+      updateMessage(loadingId, { 
+        content: botResponse, 
+        isLoading: false 
+      });
+
       if (chatState === 'minimized' || chatState === 'closed') {
         setHasNewMessage(true);
       }
 
-      toast({
-        title: "Arquivo enviado",
-        description: `${type === 'image' ? 'Imagem' : 'Áudio'} enviado com sucesso`,
-      });
-
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      
+      // Remove mensagem de loading em caso de erro
+      if (loadingId) {
+        updateMessage(loadingId, { 
+          content: `Erro: ${errorMessage}`, 
+          isLoading: false 
+        });
+      }
+
       toast({
         title: "Erro ao enviar arquivo",
-        description: "Não foi possível enviar o arquivo",
+        description: errorMessage,
         variant: "destructive",
       });
     }

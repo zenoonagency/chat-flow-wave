@@ -58,8 +58,60 @@ export const useChatApi = () => {
     }
   };
 
+  const sendMediaMessage = async (file: File, fileName: string): Promise<string> => {
+    setIsLoading(true);
+    
+    try {
+      console.log('Enviando arquivo:', fileName, file.type);
+      
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('fileName', fileName);
+      formData.append('fileType', file.type);
+
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        body: formData,
+      });
+
+      console.log('Response status (media):', response.status);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseText = await response.text();
+      console.log('Response text (media):', responseText);
+      
+      try {
+        const jsonData = JSON.parse(responseText);
+        console.log('Parsed JSON (media):', jsonData);
+        
+        if (Array.isArray(jsonData) && jsonData[0]?.output) {
+          return jsonData[0].output;
+        } else if (jsonData.message) {
+          return jsonData.message;
+        } else if (jsonData.output) {
+          return jsonData.output;
+        } else {
+          return responseText;
+        }
+      } catch (parseError) {
+        console.log('Não é JSON válido, usando texto diretamente (media):', responseText);
+        return responseText;
+      }
+      
+    } catch (error) {
+      console.error('Erro ao enviar arquivo:', error);
+      throw new Error('Falha ao enviar arquivo. Tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     sendMessage,
+    sendMediaMessage,
     isLoading,
   };
 };
