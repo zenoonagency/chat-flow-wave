@@ -19,6 +19,8 @@ export const ChatInput = ({
   placeholder = "Digite sua mensagem..." 
 }: ChatInputProps) => {
   const [message, setMessage] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -76,6 +78,68 @@ export const ChatInput = ({
     }
   };
 
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const chunks: Blob[] = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          chunks.push(e.data);
+        }
+      };
+
+      recorder.onstop = () => {
+        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        const audioFile = new File([audioBlob], `audio-${Date.now()}.webm`, { type: 'audio/webm' });
+        
+        // Envia o áudio como mensagem
+        onSendMedia(`Áudio gravado`, 'audio', audioFile);
+        
+        // Para todas as tracks do stream
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      setMediaRecorder(recorder);
+      recorder.start();
+      setIsRecording(true);
+
+      toast({
+        title: "Gravação iniciada",
+        description: "Fale agora. Clique novamente para parar.",
+      });
+
+    } catch (error) {
+      toast({
+        title: "Erro ao acessar microfone",
+        description: "Permita o acesso ao microfone para gravar áudio",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+      setIsRecording(false);
+      setMediaRecorder(null);
+
+      toast({
+        title: "Gravação finalizada",
+        description: "Áudio enviado com sucesso",
+      });
+    }
+  };
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
+
   return (
     <div className="p-4 border-t bg-chat-surface">
       <form onSubmit={handleSubmit} className="flex gap-2">
@@ -89,6 +153,19 @@ export const ChatInput = ({
             className="h-10 w-10 p-0 hover:bg-chat-border"
           >
             <Paperclip className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={toggleRecording}
+            disabled={disabled}
+            className={cn(
+              "h-10 w-10 p-0 hover:bg-chat-border",
+              isRecording && "bg-red-500 hover:bg-red-600 text-white animate-pulse"
+            )}
+          >
+            <Mic className="h-4 w-4" />
           </Button>
           <input
             ref={fileInputRef}
