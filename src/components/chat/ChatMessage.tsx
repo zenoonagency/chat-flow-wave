@@ -60,13 +60,13 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
         </div>
       )}
       
-      <div 
-        className={cn(
-          "max-w-[70%] rounded-2xl px-4 py-3 relative",
-          isUser 
-            ? "bg-chat-bubble-user text-chat-bubble-user-text rounded-br-md shadow-lg" 
-            : "bg-chat-bubble-bot text-chat-bubble-bot-text rounded-bl-md border border-chat-border"
-        )}
+        <div 
+          className={cn(
+            "max-w-[70%] rounded-2xl px-4 py-3 relative",
+            isUser 
+              ? "bg-chat-bubble-user text-chat-bubble-user-text rounded-br-md shadow-lg" 
+              : "bg-chat-bubble-bot text-white rounded-bl-md border border-chat-border"
+          )}
       >
         {message.isLoading ? (
           <div className="flex items-center gap-2">

@@ -29,7 +29,7 @@ export const ChatHeader = ({
           <Bot className="h-4 w-4 text-white" />
         </div>
         <div>
-          <h3 className="font-medium text-sm text-white">Chat Assistant</h3>
+          <h3 className="font-medium text-sm text-gray-200">Chat Assistant</h3>
           <p className="text-xs text-green-400">Online</p>
         </div>
       </div>
