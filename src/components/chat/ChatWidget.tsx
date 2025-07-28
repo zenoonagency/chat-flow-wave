@@ -89,7 +89,7 @@ export const ChatWidget = () => {
     }
   };
 
-  const handleSendMedia = async (content: string, type: 'image' | 'audio', file: File) => {
+  const handleSendMedia = async (content: string, type: 'image' | 'audio' | 'document', file: File) => {
     let loadingId: string | undefined;
     
     try {
@@ -113,7 +113,7 @@ export const ChatWidget = () => {
       });
 
       // Envia arquivo para API
-      const botResponse = await sendMediaMessage(file, file.name);
+      const botResponse = await sendMediaMessage(file, file.name, type);
       
       // Atualiza mensagem do bot com a resposta
       updateMessage(loadingId, { 

@@ -6,7 +6,7 @@ export interface ChatMessage {
   sender: 'user' | 'bot';
   timestamp: Date;
   isLoading?: boolean;
-  type?: 'text' | 'image' | 'audio';
+  type?: 'text' | 'image' | 'audio' | 'document';
   mediaUrl?: string;
   fileName?: string;
 }

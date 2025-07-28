@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
-  onSendMedia: (content: string, type: 'image' | 'audio', file: File) => void;
+  onSendMedia: (content: string, type: 'image' | 'audio' | 'document', file: File) => void;
   disabled?: boolean;
   placeholder?: string;
 }
@@ -53,17 +53,21 @@ export const ChatInput = ({
 
     const isImage = file.type.startsWith('image/');
     const isAudio = file.type.startsWith('audio/');
+    const isDocument = file.type.startsWith('application/') || 
+                      file.type.includes('pdf') || 
+                      file.type.includes('doc') || 
+                      file.type.includes('text/');
     
-    if (!isImage && !isAudio) {
+    if (!isImage && !isAudio && !isDocument) {
       toast({
         title: "Tipo de arquivo não suportado",
-        description: "Apenas imagens e áudios são aceitos",
+        description: "Apenas imagens, áudios e documentos são aceitos",
         variant: "destructive"
       });
       return;
     }
 
-    const type = isImage ? 'image' : 'audio';
+    const type = isImage ? 'image' : isAudio ? 'audio' : 'document';
     onSendMedia(file.name, type, file);
     
     // Reset input
@@ -89,7 +93,7 @@ export const ChatInput = ({
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*,audio/*"
+            accept="image/*,audio/*,application/*,.pdf,.doc,.docx,.txt"
             onChange={handleFileSelect}
             className="hidden"
           />

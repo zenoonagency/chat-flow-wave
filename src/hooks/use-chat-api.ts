@@ -16,7 +16,10 @@ export const useChatApi = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ 
+          type: 'text',
+          content: message 
+        }),
       });
 
       console.log('Response status:', response.status);
@@ -58,16 +61,16 @@ export const useChatApi = () => {
     }
   };
 
-  const sendMediaMessage = async (file: File, fileName: string): Promise<string> => {
+  const sendMediaMessage = async (file: File, fileName: string, messageType: 'image' | 'audio' | 'document'): Promise<string> => {
     setIsLoading(true);
     
     try {
-      console.log('Enviando arquivo:', fileName, file.type);
+      console.log('Enviando arquivo:', fileName, file.type, 'tipo:', messageType);
       
       const formData = new FormData();
+      formData.append('type', messageType);
+      formData.append('content', fileName);
       formData.append('file', file);
-      formData.append('fileName', fileName);
-      formData.append('fileType', file.type);
 
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
