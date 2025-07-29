@@ -57,7 +57,8 @@ export const QuickMessages = ({ onSend, disabled }: QuickMessageProps) => {
   return (
     <div className="p-3 bg-transparent">      
       <div className="space-y-2">
-        {quickMessages.map((quickMsg) => {
+        {quickMessages.map((quickMsg, index) => {
+          const animationClass = `animate-card-reveal-${index + 1}`;
           return (
             <Button
               key={quickMsg.id}
@@ -66,7 +67,8 @@ export const QuickMessages = ({ onSend, disabled }: QuickMessageProps) => {
               disabled={disabled}
               className={cn(
                 "w-full justify-between h-auto p-3 text-left bg-card/50 hover:bg-card/70 border border-border rounded-lg",
-                "transition-all duration-200 group"
+                "transition-all duration-200 group",
+                animationClass
               )}
             >
               <div className="flex items-start gap-2 flex-1">

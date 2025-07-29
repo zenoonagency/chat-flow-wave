@@ -222,10 +222,10 @@ export const ChatWidget = () => {
         <div
           className={cn(
             "fixed z-50 bg-chat-background border-chat-border border shadow-2xl",
-            "flex flex-col overflow-hidden animate-chat-reveal",
+            "flex flex-col overflow-hidden",
             isMaximized 
-              ? "top-0 left-0 w-full h-full rounded-none" 
-              : "rounded-l-2xl"
+              ? "top-0 left-0 w-full h-full rounded-none animate-slide-in-right" 
+              : "rounded-l-2xl animate-slide-in-right"
           )}
           style={!isMaximized ? {
             left: `${position.x}px`,
@@ -245,7 +245,7 @@ export const ChatWidget = () => {
           />
           
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 bg-chat-background animate-content-reveal">
+          <div className="flex-1 overflow-y-auto p-4 bg-chat-background">
             {messages.length === 0 ? (
               <div className="flex items-center justify-center h-full text-muted-foreground">
                 <div className="text-center">
@@ -268,21 +268,18 @@ export const ChatWidget = () => {
             <div ref={messagesEndRef} />
           </div>
           
-          {/* Quick Messages and Input with staggered animation */}
-          <div className="animate-input-reveal">
-            {/* Quick Messages */}
-            <QuickMessages
-              onSend={handleSendMessage}
-              disabled={isLoading}
-            />
-            
-            <ChatInput
-              onSend={handleSendMessage}
-              onSendMedia={handleSendMedia}
-              disabled={isLoading}
-              placeholder="Digite sua mensagem..."
-            />
-          </div>
+          {/* Quick Messages */}
+          <QuickMessages
+            onSend={handleSendMessage}
+            disabled={isLoading}
+          />
+          
+          <ChatInput
+            onSend={handleSendMessage}
+            onSendMedia={handleSendMedia}
+            disabled={isLoading}
+            placeholder="Digite sua mensagem..."
+          />
         </div>
       )}
     </>

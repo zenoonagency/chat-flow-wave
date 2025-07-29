@@ -24,7 +24,7 @@ export const ChatHeader = ({
   return (
     <div 
       className={cn(
-        "flex items-center justify-between p-4 border-b border-chat-border bg-chat-surface animate-header-reveal",
+        "flex items-center justify-between p-4 border-b border-chat-border bg-chat-surface",
         "cursor-move select-none",
         isDragging && "cursor-grabbing"
       )}
