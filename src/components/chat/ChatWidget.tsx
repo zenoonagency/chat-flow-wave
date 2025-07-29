@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChatStorage } from '@/hooks/use-chat-storage';
 import { useChatApi } from '@/hooks/use-chat-api';
@@ -11,7 +11,7 @@ import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import { QuickMessages } from './QuickMessages';
 
-type ChatState = 'closed' | 'minimized' | 'open';
+type ChatState = 'closed' | 'minimized' | 'open' | 'maximized';
 
 export const ChatWidget = () => {
   const [chatState, setChatState] = useState<ChatState>('closed');
@@ -153,13 +153,22 @@ export const ChatWidget = () => {
     setChatState('minimized');
   };
 
+  const handleMaximizeChat = () => {
+    setChatState('maximized');
+  };
+
+  const handleRestoreChat = () => {
+    setChatState('open');
+  };
+
   const handleCloseChat = () => {
     setChatState('closed');
     resetPosition();
   };
 
   const isVisible = chatState !== 'closed';
-  const isOpen = chatState === 'open';
+  const isOpen = chatState === 'open' || chatState === 'maximized';
+  const isMaximized = chatState === 'maximized';
 
   return (
     <>
@@ -180,33 +189,30 @@ export const ChatWidget = () => {
         </Button>
       )}
 
-      {/* Minimized Chat */}
+      {/* Minimized Chat - positioned at top */}
       {chatState === 'minimized' && (
         <div
           className={cn(
-            "fixed z-50",
+            "fixed z-50 top-4 right-4",
             "animate-slide-up"
           )}
-          style={{
-            left: `${position.x}px`,
-            top: `${position.y + 60}px`, // Offset do header
-          }}
         >
           <Button
             onClick={handleOpenChat}
             className={cn(
               "h-12 px-4 rounded-lg shadow-lg bg-chat-primary hover:bg-chat-primary-hover",
-              "flex items-center gap-2 text-white"
+              "flex items-center gap-2 text-white relative"
             )}
-            style={{
-              width: `${window.innerWidth * 0.33 - 20}px`, // Mesma largura do chat - padding
-            }}
           >
             <MessageCircle className="h-5 w-5" />
-            <span className="text-sm font-medium">Chat Assistant</span>
+            <span className="text-sm font-medium">Chat Minimizado</span>
             {hasNewMessage && (
-              <div className="h-2 w-2 bg-white rounded-full animate-pulse ml-auto" />
+              <div className="h-2 w-2 bg-white rounded-full animate-pulse ml-2" />
             )}
+            {/* Minimize indicator */}
+            <div className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-500 rounded-full flex items-center justify-center">
+              <Minus className="h-2 w-2 text-white" />
+            </div>
           </Button>
         </div>
       )}
@@ -216,25 +222,30 @@ export const ChatWidget = () => {
         <div
           className={cn(
             "fixed z-50 bg-chat-background border-chat-border border shadow-2xl",
-            "flex flex-col overflow-hidden",
-            "animate-slide-in-right rounded-l-2xl"
+            "flex flex-col overflow-hidden animate-chat-reveal",
+            isMaximized 
+              ? "top-0 left-0 w-full h-full rounded-none" 
+              : "rounded-l-2xl"
           )}
-          style={{
+          style={!isMaximized ? {
             left: `${position.x}px`,
             top: `${position.y}px`,
             width: `${window.innerWidth * 0.33}px`, // 33% da largura
             height: `${window.innerHeight}px`, // 100% da altura
-          }}
+          } : {}}
         >
           <ChatHeader
             onClose={handleCloseChat}
             onMinimize={handleMinimizeChat}
+            onMaximize={handleMaximizeChat}
+            onRestore={handleRestoreChat}
             onMouseDown={handleMouseDown}
             isDragging={isDragging}
+            isMaximized={isMaximized}
           />
           
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 bg-chat-background">
+          <div className="flex-1 overflow-y-auto p-4 bg-chat-background animate-content-reveal">
             {messages.length === 0 ? (
               <div className="flex items-center justify-center h-full text-muted-foreground">
                 <div className="text-center">
@@ -257,18 +268,21 @@ export const ChatWidget = () => {
             <div ref={messagesEndRef} />
           </div>
           
-          {/* Quick Messages */}
-          <QuickMessages
-            onSend={handleSendMessage}
-            disabled={isLoading}
-          />
-          
-          <ChatInput
-            onSend={handleSendMessage}
-            onSendMedia={handleSendMedia}
-            disabled={isLoading}
-            placeholder="Digite sua mensagem..."
-          />
+          {/* Quick Messages and Input with staggered animation */}
+          <div className="animate-input-reveal">
+            {/* Quick Messages */}
+            <QuickMessages
+              onSend={handleSendMessage}
+              disabled={isLoading}
+            />
+            
+            <ChatInput
+              onSend={handleSendMessage}
+              onSendMedia={handleSendMedia}
+              disabled={isLoading}
+              placeholder="Digite sua mensagem..."
+            />
+          </div>
         </div>
       )}
     </>
