@@ -49,16 +49,14 @@ const quickMessages = [
 ];
 
 export const QuickMessages = ({ onSend, disabled }: QuickMessageProps) => {
+  // Não renderiza se estiver disabled (IA digitando)
+  if (disabled) {
+    return null;
+  }
+
   return (
-    <div className="p-4 border-t bg-background">
-      <div className="flex items-center gap-2 mb-4">
-        <MessageSquare className="h-4 w-4 text-muted-foreground" />
-        <span className="text-sm font-medium text-muted-foreground">
-          Recursos
-        </span>
-      </div>
-      
-      <div className="space-y-3">
+    <div className="p-3 bg-transparent">      
+      <div className="space-y-2">
         {quickMessages.map((quickMsg) => {
           return (
             <Button
@@ -67,12 +65,12 @@ export const QuickMessages = ({ onSend, disabled }: QuickMessageProps) => {
               onClick={() => onSend(quickMsg.message)}
               disabled={disabled}
               className={cn(
-                "w-full justify-between h-auto p-4 text-left bg-card hover:bg-card/80 border border-border rounded-lg",
+                "w-full justify-between h-auto p-3 text-left bg-card/50 hover:bg-card/70 border border-border rounded-lg",
                 "transition-all duration-200 group"
               )}
             >
-              <div className="flex items-start gap-3 flex-1">
-                <div className="relative w-8 h-8 flex-shrink-0">
+              <div className="flex items-start gap-2 flex-1">
+                <div className="relative w-6 h-6 flex-shrink-0">
                   <img 
                     src={quickMsg.image} 
                     alt={quickMsg.title}
@@ -80,11 +78,11 @@ export const QuickMessages = ({ onSend, disabled }: QuickMessageProps) => {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-medium text-sm text-foreground truncate">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <h4 className="font-medium text-xs text-foreground truncate">
                       {quickMsg.title}
                     </h4>
-                    <span className="px-1.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded dark:bg-blue-900/20 dark:text-blue-300">
+                    <span className="px-1 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded dark:bg-blue-900/20 dark:text-blue-300">
                       {quickMsg.badge}
                     </span>
                   </div>
@@ -93,7 +91,7 @@ export const QuickMessages = ({ onSend, disabled }: QuickMessageProps) => {
                   </p>
                 </div>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
+              <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
             </Button>
           );
         })}
