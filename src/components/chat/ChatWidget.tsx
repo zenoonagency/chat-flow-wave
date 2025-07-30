@@ -6,6 +6,7 @@ import { useChatStorage } from '@/hooks/use-chat-storage';
 import { useChatApi } from '@/hooks/use-chat-api';
 import { useDrag } from '@/hooks/use-drag';
 import { useToast } from '@/hooks/use-toast';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { ChatHeader } from './ChatHeader';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
@@ -16,6 +17,7 @@ type ChatState = 'closed' | 'minimized' | 'open' | 'maximized';
 export const ChatWidget = () => {
   const [chatState, setChatState] = useState<ChatState>('closed');
   const [hasNewMessage, setHasNewMessage] = useState(false);
+  const [chatWidth, setChatWidth] = useState(33); // Largura em porcentagem
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const { messages, addMessage, updateMessage } = useChatStorage();
@@ -221,8 +223,8 @@ export const ChatWidget = () => {
       {isOpen && (
         <div
           className={cn(
-            "fixed z-50 bg-chat-background border-chat-border border shadow-2xl",
-            "flex flex-col overflow-hidden",
+            "fixed z-50 shadow-2xl",
+            "flex overflow-hidden",
             isMaximized 
               ? "top-0 left-0 w-full h-full rounded-none animate-slide-in-right" 
               : "rounded-l-2xl animate-slide-in-right"
@@ -230,56 +232,70 @@ export const ChatWidget = () => {
           style={!isMaximized ? {
             left: `${position.x}px`,
             top: `${position.y}px`,
-            width: `${window.innerWidth * 0.33}px`, // 33% da largura
-            height: `${window.innerHeight}px`, // 100% da altura
+            width: `${window.innerWidth * (chatWidth / 100)}px`,
+            height: `${window.innerHeight}px`,
           } : {}}
         >
-          <ChatHeader
-            onClose={handleCloseChat}
-            onMinimize={handleMinimizeChat}
-            onMaximize={handleMaximizeChat}
-            onRestore={handleRestoreChat}
-            onMouseDown={handleMouseDown}
-            isDragging={isDragging}
-            isMaximized={isMaximized}
-          />
-          
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 bg-chat-background">
-            {messages.length === 0 ? (
-              <div className="flex items-center justify-center h-full text-muted-foreground">
-                <div className="text-center">
-                  <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-sm">Inicie uma conversa!</p>
-                  <p className="text-xs mt-2 opacity-70">
-                    Use as mensagens rápidas abaixo ou digite sua própria pergunta.
-                  </p>
-                </div>
+          <ResizablePanelGroup direction="horizontal">
+            <ResizablePanel 
+              defaultSize={100}
+              className="bg-chat-background border-chat-border border flex flex-col"
+            >
+              <ChatHeader
+                onClose={handleCloseChat}
+                onMinimize={handleMinimizeChat}
+                onMaximize={handleMaximizeChat}
+                onRestore={handleRestoreChat}
+                onMouseDown={handleMouseDown}
+                isDragging={isDragging}
+                isMaximized={isMaximized}
+              />
+              
+              {/* Messages Area */}
+              <div className="flex-1 overflow-y-auto p-4 bg-chat-background">
+                {messages.length === 0 ? (
+                  <div className="flex items-center justify-center h-full text-muted-foreground">
+                    <div className="text-center">
+                      <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p className="text-sm">Inicie uma conversa!</p>
+                      <p className="text-xs mt-2 opacity-70">
+                        Use as mensagens rápidas abaixo ou digite sua própria pergunta.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {console.log('Renderizando', messages.length, 'mensagens')}
+                    {messages.map((message, index) => {
+                      console.log('Renderizando mensagem', index, message);
+                      return <ChatMessage key={message.id} message={message} />
+                    })}
+                  </>
+                )}
+                <div ref={messagesEndRef} />
               </div>
-            ) : (
-              <>
-                {console.log('Renderizando', messages.length, 'mensagens')}
-                {messages.map((message, index) => {
-                  console.log('Renderizando mensagem', index, message);
-                  return <ChatMessage key={message.id} message={message} />
-                })}
-              </>
+              
+              {/* Quick Messages */}
+              <QuickMessages
+                onSend={handleSendMessage}
+                disabled={isLoading}
+              />
+              
+              <ChatInput
+                onSend={handleSendMessage}
+                onSendMedia={handleSendMedia}
+                disabled={isLoading}
+                placeholder="Digite sua mensagem..."
+              />
+            </ResizablePanel>
+            
+            {!isMaximized && (
+              <ResizableHandle 
+                withHandle 
+                className="w-2 bg-chat-border hover:bg-chat-border/80 transition-colors"
+              />
             )}
-            <div ref={messagesEndRef} />
-          </div>
-          
-          {/* Quick Messages */}
-          <QuickMessages
-            onSend={handleSendMessage}
-            disabled={isLoading}
-          />
-          
-          <ChatInput
-            onSend={handleSendMessage}
-            onSendMedia={handleSendMedia}
-            disabled={isLoading}
-            placeholder="Digite sua mensagem..."
-          />
+          </ResizablePanelGroup>
         </div>
       )}
     </>
