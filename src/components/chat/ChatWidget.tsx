@@ -103,8 +103,12 @@ export const ChatWidget = () => {
     let loadingId: string | undefined;
     
     try {
-      // Cria URL do blob para visualização
-      const mediaUrl = URL.createObjectURL(file);
+      // Converte o arquivo para base64 para persistência
+      const mediaUrl = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
       
       // Adiciona mensagem do usuário com mídia
       const userMessageId = addMessage({ 
