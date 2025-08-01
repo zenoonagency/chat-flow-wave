@@ -38,19 +38,23 @@ export const useChatApi = () => {
         console.log('Parsed JSON:', jsonData);
         
         // Lida com diferentes formatos de resposta JSON
+        let responseContent = '';
         if (Array.isArray(jsonData) && jsonData[0]?.output) {
-          return jsonData[0].output;
+          responseContent = jsonData[0].output;
         } else if (jsonData.message) {
-          return jsonData.message;
+          responseContent = jsonData.message;
         } else if (jsonData.output) {
-          return jsonData.output;
+          responseContent = jsonData.output;
         } else {
-          return responseText; // Se JSON não tem formato esperado, usa texto
+          responseContent = responseText; // Se JSON não tem formato esperado, usa texto
         }
+        
+        // Converte sequências \n\n e \n em quebras de linha reais
+        return responseContent.replace(/\\n\\n/g, '\n\n').replace(/\\n/g, '\n');
       } catch (parseError) {
         console.log('Não é JSON válido, usando texto diretamente:', responseText);
-        // Se não é JSON válido, retorna o texto diretamente
-        return responseText;
+        // Se não é JSON válido, retorna o texto diretamente com quebras de linha convertidas
+        return responseText.replace(/\\n\\n/g, '\n\n').replace(/\\n/g, '\n');
       }
       
     } catch (error) {
@@ -104,18 +108,22 @@ export const useChatApi = () => {
         const jsonData = JSON.parse(responseText);
         console.log('Parsed JSON (media):', jsonData);
         
+        let responseContent = '';
         if (Array.isArray(jsonData) && jsonData[0]?.output) {
-          return jsonData[0].output;
+          responseContent = jsonData[0].output;
         } else if (jsonData.message) {
-          return jsonData.message;
+          responseContent = jsonData.message;
         } else if (jsonData.output) {
-          return jsonData.output;
+          responseContent = jsonData.output;
         } else {
-          return responseText;
+          responseContent = responseText;
         }
+        
+        // Converte sequências \n\n e \n em quebras de linha reais
+        return responseContent.replace(/\\n\\n/g, '\n\n').replace(/\\n/g, '\n');
       } catch (parseError) {
         console.log('Não é JSON válido, usando texto diretamente (media):', responseText);
-        return responseText;
+        return responseText.replace(/\\n\\n/g, '\n\n').replace(/\\n/g, '\n');
       }
       
     } catch (error) {
