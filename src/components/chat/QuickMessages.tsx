@@ -55,7 +55,7 @@ export const QuickMessages = ({ onSend, disabled }: QuickMessageProps) => {
   }
 
   return (
-    <div className="p-3 bg-transparent">      
+    <div className="px-3 pb-3 bg-transparent">      
       <div className="space-y-2">
         {quickMessages.map((quickMsg, index) => {
           const animationClass = `animate-card-reveal-${index + 1}`;
