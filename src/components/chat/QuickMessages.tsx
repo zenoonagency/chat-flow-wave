@@ -71,7 +71,7 @@ export const QuickMessages = ({ onSend, disabled }: QuickMessageProps) => {
                 animationClass
               )}
             >
-              <div className="flex items-start gap-2 flex-1">
+              <div className="flex items-center gap-2 flex-1">
                 <div className="relative w-6 h-6 flex-shrink-0">
                   <img 
                     src={quickMsg.image} 
@@ -79,18 +79,13 @@ export const QuickMessages = ({ onSend, disabled }: QuickMessageProps) => {
                     className="w-full h-full object-cover rounded"
                   />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <h4 className="font-medium text-xs text-foreground truncate">
-                      {quickMsg.title}
-                    </h4>
-                    <span className="px-1 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded dark:bg-blue-900/20 dark:text-blue-300">
-                      {quickMsg.badge}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground line-clamp-1">
-                    {quickMsg.description}
-                  </p>
+                <div className="flex items-center gap-2 flex-1">
+                  <h4 className="font-medium text-xs text-foreground truncate">
+                    {quickMsg.title}
+                  </h4>
+                  <span className="px-1 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded dark:bg-blue-900/20 dark:text-blue-300">
+                    {quickMsg.badge}
+                  </span>
                 </div>
               </div>
               <ChevronRight className="h-3 w-3 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
