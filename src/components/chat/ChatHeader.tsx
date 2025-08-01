@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
-import { X, Minus, Bot, Maximize2, Minimize2, Square } from 'lucide-react';
+import { X, Minus, Maximize2, Minimize2, Square } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import zenaixLogo from '@/assets/zenaix-logo.png';
 
 interface ChatHeaderProps {
   onClose: () => void;
@@ -31,11 +32,11 @@ export const ChatHeader = ({
       onMouseDown={onMouseDown}
     >
       <div className="flex items-center gap-3">
-        <div className="h-8 w-8 rounded-full bg-chat-primary flex items-center justify-center">
-          <Bot className="h-4 w-4 text-white" />
+        <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center p-1">
+          <img src={zenaixLogo} alt="Zenaix Logo" className="w-full h-full object-contain" />
         </div>
         <div>
-          <h3 className="font-medium text-sm text-black">Chat Assistant</h3>
+          <h3 className="font-medium text-sm text-black">Zenaix Assistant</h3>
           <p className="text-xs text-green-400">Online</p>
         </div>
       </div>

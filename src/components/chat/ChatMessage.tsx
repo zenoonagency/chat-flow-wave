@@ -1,7 +1,8 @@
 import { ChatMessage as ChatMessageType } from '@/hooks/use-chat-storage';
 import { cn } from '@/lib/utils';
-import { Loader2, Bot, User, Volume2, Download } from 'lucide-react';
+import { Loader2, User, Volume2, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import zenaixLogo from '@/assets/zenaix-logo.png';
 
 interface ChatMessageProps {
   message: ChatMessageType;
@@ -55,8 +56,8 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
       )}
     >
       {!isUser && (
-        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-chat-primary flex items-center justify-center">
-          <Bot className="h-4 w-4 text-white" />
+        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white flex items-center justify-center p-1">
+          <img src={zenaixLogo} alt="Zenaix Logo" className="w-full h-full object-contain" />
         </div>
       )}
       
