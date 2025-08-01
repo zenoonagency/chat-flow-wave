@@ -182,7 +182,7 @@ export const ChatInput = ({
           onKeyPress={handleKeyPress}
           placeholder={placeholder}
           disabled={disabled}
-          className="flex-1 min-h-[40px] bg-chat-background border-chat-border text-gray-200 placeholder:text-gray-500"
+          className="flex-1 min-h-[40px] bg-white border-gray-300 text-black placeholder:text-gray-500"
           autoComplete="off"
         />
         

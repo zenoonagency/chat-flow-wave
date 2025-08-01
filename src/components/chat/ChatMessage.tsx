@@ -65,7 +65,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
             "max-w-[70%] rounded-2xl px-4 py-3 relative",
             isUser 
               ? "bg-chat-bubble-user text-chat-bubble-user-text rounded-br-md shadow-lg" 
-              : "bg-chat-bubble-bot text-white rounded-bl-md border border-chat-border"
+              : "bg-gray-100 text-gray-800 rounded-bl-md border border-gray-200"
           )}
       >
         {message.isLoading ? (
