@@ -26,15 +26,15 @@ export const ChatWidget = () => {
   
   
   const { position, isDragging, handleMouseDown, resetPosition } = useDrag({
-    initialPosition: { x: window.innerWidth * 0.67, y: 0 }, // Posição inicial alinhada à direita
+    initialPosition: { x: window.innerWidth - 350, y: 20 }, // Posição inicial no canto superior direito
   });
 
   const { size, isResizing, handleResizeStart, resetSize } = useResize({
-    initialSize: { width: window.innerWidth * 0.33, height: window.innerHeight },
+    initialSize: { width: 350, height: 600 },
     minWidth: 300,
     minHeight: 400,
-    maxWidth: window.innerWidth * 0.8,
-    maxHeight: window.innerHeight * 0.9
+    maxWidth: window.innerWidth * 0.9,
+    maxHeight: window.innerHeight
   });
 
   const scrollToBottom = () => {

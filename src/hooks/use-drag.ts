@@ -33,14 +33,17 @@ export const useDrag = ({
       
       const newPosition = {
         x: positionStart.current.x + deltaX,
-        y: positionStart.current.y, // Mantém Y fixo - apenas movimento horizontal
+        y: positionStart.current.y + deltaY, // Permite movimento vertical
       };
 
       // Limita a posição dentro da tela
-      const chatWidth = window.innerWidth * 0.33; // 33% da largura
+      const chatWidth = 400; // Largura mínima do chat
+      const chatHeight = 200; // Altura mínima para header
       const maxX = window.innerWidth - chatWidth;
+      const maxY = window.innerHeight - chatHeight;
       
       newPosition.x = Math.max(0, Math.min(maxX, newPosition.x));
+      newPosition.y = Math.max(0, Math.min(maxY, newPosition.y));
 
       setPosition(newPosition);
     };

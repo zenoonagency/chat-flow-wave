@@ -17,8 +17,8 @@ export const useResize = ({
   initialSize = { width: 400, height: 600 }, 
   minWidth = 300,
   minHeight = 400,
-  maxWidth = window.innerWidth * 0.8,
-  maxHeight = window.innerHeight * 0.9
+  maxWidth = window.innerWidth * 0.9,
+  maxHeight = window.innerHeight
 }: UseResizeOptions = {}) => {
   const [size, setSize] = useState<Size>(initialSize);
   const [isResizing, setIsResizing] = useState(false);
