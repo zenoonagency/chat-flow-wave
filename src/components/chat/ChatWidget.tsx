@@ -25,16 +25,18 @@ export const ChatWidget = () => {
   const { toast } = useToast();
   
   
-  const { position, isDragging, handleMouseDown, resetPosition } = useDrag({
-    initialPosition: { x: window.innerWidth - 350, y: 20 }, // Posição inicial no canto superior direito
-  });
-
   const { size, isResizing, handleResizeStart, resetSize } = useResize({
     initialSize: { width: 350, height: 600 },
     minWidth: 300,
     minHeight: 400,
     maxWidth: window.innerWidth * 0.9,
     maxHeight: window.innerHeight
+  });
+
+  const { position, isDragging, handleMouseDown, resetPosition } = useDrag({
+    initialPosition: { x: window.innerWidth - 350, y: 20 },
+    containerWidth: size.width,
+    containerHeight: size.height
   });
 
   const scrollToBottom = () => {
@@ -260,7 +262,7 @@ export const ChatWidget = () => {
           />
           
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 bg-white">
+          <div className="flex-1 overflow-y-auto p-4 bg-white border-t border-gray-200">
             {messages.length === 0 ? (
               <div className="flex items-center justify-center h-full text-muted-foreground">
                 <div className="text-center">

@@ -9,12 +9,16 @@ interface UseDragOptions {
   initialPosition?: Position;
   onDragStart?: () => void;
   onDragEnd?: () => void;
+  containerWidth?: number;
+  containerHeight?: number;
 }
 
 export const useDrag = ({ 
   initialPosition = { x: 0, y: 0 }, 
   onDragStart, 
-  onDragEnd 
+  onDragEnd,
+  containerWidth = 350,
+  containerHeight = 400
 }: UseDragOptions = {}) => {
   const [position, setPosition] = useState<Position>(initialPosition);
   const [isDragging, setIsDragging] = useState(false);
@@ -37,10 +41,8 @@ export const useDrag = ({
       };
 
       // Limita a posição dentro da tela
-      const chatWidth = 400; // Largura mínima do chat
-      const chatHeight = 200; // Altura mínima para header
-      const maxX = window.innerWidth - chatWidth;
-      const maxY = window.innerHeight - chatHeight;
+      const maxX = window.innerWidth - containerWidth;
+      const maxY = window.innerHeight - containerHeight;
       
       newPosition.x = Math.max(0, Math.min(maxX, newPosition.x));
       newPosition.y = Math.max(0, Math.min(maxY, newPosition.y));
